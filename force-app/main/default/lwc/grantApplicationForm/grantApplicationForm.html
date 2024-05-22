@@ -1,0 +1,14 @@
+<template>
+    <lightning-card title="Grant Application Form" icon-name="custom:custom63">
+        <div class="slds-p-around_medium">
+            <lightning-combobox
+                name="supportoption"
+                label="Select Support Option"
+                value={selectedValue}
+                placeholder="Select an option"
+                options={options}
+                onchange={handleChange}>
+            </lightning-combobox>
+        </div>
+    </lightning-card>
+</template>
