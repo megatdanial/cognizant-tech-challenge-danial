@@ -1,14 +1,21 @@
 <template>
     <lightning-card title="Grant Application Form" icon-name="custom:custom63">
         <div class="slds-p-around_medium">
+            <lightning-input label="Applicant First Name" required="true" value={firstName} onchange={handleChange} data-id="firstName"></lightning-input>
+            <lightning-input label="Applicant Last Name" required="true" value={lastName} onchange={handleChange} data-id="lastName"></lightning-input>
+            <lightning-input label="Phone" required="true" value={phone} onchange={handleChange} data-id="phone"></lightning-input>
+            <lightning-input label="Mailing Postal Code" required="true" value={postalCode} onchange={handleChange} data-id="postalCode"></lightning-input>
+            <lightning-input label="Monthly Income" type="number" formatter="currency" step="1" required="true" value={income} onchange={handleChange} data-id="income"></lightning-input>
             <lightning-combobox
-                name="supportoption"
-                label="Select Support Option"
+                label="Support Option"
                 value={selectedValue}
                 placeholder="Select an option"
                 options={options}
-                onchange={handleChange}>
+                onchange={handleChange}
+                required="true"
+                data-id="supportOption">
             </lightning-combobox>
+            <lightning-button label="Submit" onclick={handleSubmit} class="slds-m-top_medium"></lightning-button>
         </div>
     </lightning-card>
 </template>

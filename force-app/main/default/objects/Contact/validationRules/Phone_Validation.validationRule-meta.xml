@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Phone_Validation</fullName>
+    <active>true</active>
+    <description>Ensure phone number starts with 65 and is followed by 8 digits</description>
+    <errorConditionFormula>NOT(REGEX(Phone, &quot;^65[0-9]{8}$&quot;))</errorConditionFormula>
+    <errorMessage>Should be a valid Singapore phone format number (e.g. 6568123456)</errorMessage>
+</ValidationRule>

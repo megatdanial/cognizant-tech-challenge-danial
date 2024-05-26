@@ -8,4 +8,5 @@ public without sharing class ComboboxOptionsController {
         }
         return options;
     }
+
 }

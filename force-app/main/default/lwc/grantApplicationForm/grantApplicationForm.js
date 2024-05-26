@@ -1,7 +1,16 @@
 import { LightningElement, wire } from 'lwc';
+import Toast from 'lightning/toast';
+import ToastContainer from 'lightning/toastContainer';
 import getComboboxOptions from '@salesforce/apex/ComboboxOptionsController.getComboboxOptions';
+import checkPhone from '@salesforce/apex/ContactController.checkPhone';
+import createContact from '@salesforce/apex/ContactController.createContact';
 
 export default class GrantApplicationForm extends LightningElement {
+    firstName = '';
+    lastName = '';
+    phone = '';
+    postalCode = '';
+    income = '';
     options = [];
     selectedValue;
 
@@ -12,12 +21,79 @@ export default class GrantApplicationForm extends LightningElement {
                 return { label: option, value: option };
             });
         } else if (error) {
-            console.error('Error fetching combobox options', error);
+            this.showToast('Error', error.body.message, 'error');
         }
     }
 
     handleChange(event) {
-        this.selectedValue = event.detail.value;
+        const field = event.target.dataset.id;
+        if (field === 'firstName') this.firstName = event.target.value;
+        else if (field === 'lastName') this.lastName = event.target.value;
+        else if (field === 'phone') this.phone = event.target.value;
+        else if (field === 'postalCode') this.postalCode = event.target.value;
+        else if (field === 'income') this.income = event.target.value;
+        else if (field === 'supportOption') this.selectedValue = event.target.value;
+    }
+    
+    handleSubmit() {
+        checkPhone({ phone: this.phone })
+            .then(result => {
+                if (result) {
+                    this.showToast('Error', 'Phone number already associated with an existing contact.', 'error');
+                } else {
+                    this.createContactRecord();
+                }
+            })
+            .catch(error => {
+                this.showToast('Error', error.body.message, 'error');
+            });
+    }
+
+    createContactRecord() {
+        const fields = {
+            FirstName: this.firstName,
+            LastName: this.lastName,
+            Phone: this.phone,
+            MailingPostalCode: this.postalCode,
+            Monthly_Income__c: this.income,
+            Support_Option__c: this.selectedValue
+        };
+        createContact({ contact: fields })
+            .then(() => {
+                this.showToast('Success', 'Contact created successfully!', 'success');
+                this.resetForm();
+            })
+            .catch(error => {
+                console.log(error);
+                if(error.body.pageErrors != null){
+                    console.log('run');
+                    this.showToast('Error', error.body.pageErrors[0].message, 'error');
+                }
+                else{
+                    this.showToast('Error', error.body.message, 'error');
+                }
+            });
+    }
+
+    resetForm() {
+        this.firstName = '';
+        this.lastName = '';
+        this.phone = '';
+        this.postalCode = '';
+        this.income = '';
+        this.selectedValue = '';
+    }
+
+    showToast(title, message, variant) {
+        console.log('showtoast');
+        console.log(title);
+        console.log(message);
+        console.log(variant);
+        Toast.show({
+            label: title,
+            message: message,
+            variant: variant
+        }, this);
     }
 
 }
