@@ -18,7 +18,7 @@ export default class GrantApplicationForm extends LightningElement {
     wiredOptions({ error, data }) {
         if (data) {
             this.options = data.map(option => {
-                return { label: option, value: option };
+                return { label: option.MasterLabel + ': SGD ' + option.Fund__c + ' per month for ' + option.Period__c + ' months', value: option.MasterLabel };
             });
         } else if (error) {
             this.showToast('Error', error.body.message, 'error');
