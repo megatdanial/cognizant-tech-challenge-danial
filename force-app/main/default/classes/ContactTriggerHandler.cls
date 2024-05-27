@@ -1,4 +1,4 @@
-public class ContactTriggerHandler {
+public without sharing class ContactTriggerHandler {
     public static void onAfterInsert(List<Contact> newList,
                                       Map<Id, Contact> newMapItems,
                                       List<Contact> oldList,
@@ -10,6 +10,8 @@ public class ContactTriggerHandler {
                                       Map<Id, Contact> newMapItems,
                                       List<Contact> oldList,
                                       Map<Id, Contact> oldMapItems) { 
+
+                                        ContactTriggerHelper.updateNewOption(newMapItems);
                                         
 
   }
@@ -17,7 +19,7 @@ public class ContactTriggerHandler {
                                       Map<Id, Contact> newMapItems,
                                       List<Contact> oldList,
                                       Map<Id, Contact> oldMapItems) { 
-                                        
+
 
   }
 }

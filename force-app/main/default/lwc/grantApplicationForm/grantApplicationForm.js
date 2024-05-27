@@ -4,6 +4,7 @@ import getComboboxOptions from '@salesforce/apex/ComboboxOptionsController.getCo
 import checkPhone from '@salesforce/apex/ContactController.checkPhone';
 import createContact from '@salesforce/apex/ContactController.createContact';
 import updateContact from '@salesforce/apex/ContactController.updateContact';
+import checkSupportOption from '@salesforce/apex/ContactController.checkSupportOption';
 
 export default class GrantApplicationForm extends LightningElement {
     firstName = '';
@@ -41,14 +42,23 @@ export default class GrantApplicationForm extends LightningElement {
             .then(result => {
                 if (result != null) {
                     this.cid = result;
-                    this.updateContactRecord();
+                    checkSupportOption({ cid: this.cid, newOpt: this.selectedValue})
+                    .then(result => {
+                        if(result){
+                            this.updateContactRecord();
+                        }
+                        else{
+                            this.showToast('Error', 'Total Disbursed Amount is higher than new Support Option', 'error');
+                        }
+                    })
+                    
                 } else {
                     this.createContactRecord();
                 }
             })
             .catch(error => {
                 console.log(error);
-                this.showToast('Error', error, 'error');
+                this.showToast('Error', error.body.message, 'error');
             });
     }
 
