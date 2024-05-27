@@ -13,4 +13,11 @@ public class ContactTriggerHandler {
                                         
 
   }
+  public static void onBeforeUpdate(List<Contact> newList,
+                                      Map<Id, Contact> newMapItems,
+                                      List<Contact> oldList,
+                                      Map<Id, Contact> oldMapItems) { 
+                                        
+
+  }
 }

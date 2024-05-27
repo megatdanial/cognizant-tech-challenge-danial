@@ -7,5 +7,10 @@ trigger ContactTrigger on Contact (after insert, after update) {
             ContactTriggerHandler.onAfterUpdate(Trigger.new, Trigger.newMap, Trigger.old, Trigger.oldMap);
         }
     }
+    else if(Trigger.isBefore){
+        if(Trigger.isUpdate){
+            ContactTriggerHandler.onBeforeUpdate(Trigger.new, Trigger.newMap, Trigger.old, Trigger.oldMap);
+        }
+    }
 
 }

@@ -1,9 +1,9 @@
 import { LightningElement, wire } from 'lwc';
 import Toast from 'lightning/toast';
-import ToastContainer from 'lightning/toastContainer';
 import getComboboxOptions from '@salesforce/apex/ComboboxOptionsController.getComboboxOptions';
 import checkPhone from '@salesforce/apex/ContactController.checkPhone';
 import createContact from '@salesforce/apex/ContactController.createContact';
+import updateContact from '@salesforce/apex/ContactController.updateContact';
 
 export default class GrantApplicationForm extends LightningElement {
     firstName = '';
@@ -11,6 +11,7 @@ export default class GrantApplicationForm extends LightningElement {
     phone = '';
     postalCode = '';
     income = '';
+    cid = '';
     options = [];
     selectedValue;
 
@@ -38,14 +39,16 @@ export default class GrantApplicationForm extends LightningElement {
     handleSubmit() {
         checkPhone({ phone: this.phone })
             .then(result => {
-                if (result) {
-                    this.showToast('Error', 'Phone number already associated with an existing contact.', 'error');
+                if (result != null) {
+                    this.cid = result;
+                    this.updateContactRecord();
                 } else {
                     this.createContactRecord();
                 }
             })
             .catch(error => {
-                this.showToast('Error', error.body.message, 'error');
+                console.log(error);
+                this.showToast('Error', error, 'error');
             });
     }
 
@@ -61,6 +64,33 @@ export default class GrantApplicationForm extends LightningElement {
         createContact({ contact: fields })
             .then(() => {
                 this.showToast('Success', 'Contact created successfully!', 'success');
+                this.resetForm();
+            })
+            .catch(error => {
+                console.log(error);
+                if(error.body.pageErrors != null){
+                    console.log('run');
+                    this.showToast('Error', error.body.pageErrors[0].message, 'error');
+                }
+                else{
+                    this.showToast('Error', error.body.message, 'error');
+                }
+            });
+    }
+
+    updateContactRecord(){
+        const fields = {
+            Id: this.cid,
+            FirstName: this.firstName,
+            LastName: this.lastName,
+            Phone: this.phone,
+            MailingPostalCode: this.postalCode,
+            Monthly_Income__c: this.income,
+            Support_Option__c: this.selectedValue
+        };
+        updateContact({ contact: fields })
+            .then(() => {
+                this.showToast('Success', 'Contact update successfully!', 'success');
                 this.resetForm();
             })
             .catch(error => {
